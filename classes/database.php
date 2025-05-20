@@ -10,13 +10,13 @@ class database{
             username: 'root',
             password: '');
     }
-    function signupUser($firstname, $lastname, $username, $password){
+    function signupUser($firstname, $lastname, $username, $email, $password){
         $con = $this->opencon();
         try{
 // Insert into Users Table
             $con->beginTransaction();
-            $stmt = $con->prepare("INSERT INTO Admin (admin_FN, admin_LN, admin_username, admin_password) VALUES(?, ?, ?, ?)");
-            $stmt->execute([$firstname, $lastname, $username, $password]);
+            $stmt = $con->prepare("INSERT INTO Admin (admin_FN, admin_LN, admin_username, admin_email, admin_password) VALUES(?, ?, ?, ?, ?)");
+            $stmt->execute([$firstname, $lastname, $username, $email, $password]);
             $userID = $con->lastInsertID();
             $con->commit();
             return $userID;
@@ -35,4 +35,14 @@ return $count > 0;
 
 
    }
+
+   function isEmailExists($email) {
+    $con = $this->opencon();
+    $stmt = $con->prepare("SELECT COUNT(*) FROM Admin WHERE admin_email = ?");
+    $stmt->execute([$email]);
+    $count = $stmt->fetchColumn();
+    return $count > 0;
+    
+    
+       }
 }
